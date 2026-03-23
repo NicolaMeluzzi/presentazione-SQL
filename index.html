@@ -3,159 +3,276 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SQL DDL - Presentazione Professionale</title>
+    <title>SQL DDL - Masterclass Database</title>
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/theme/night.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/plugin/highlight/monokai.min.css">
 
     <style>
-        :root { --accent: #38bdf8; --bg-dark: #0f172a; }
-        .reveal { background: var(--bg-dark); }
-        
-        /* Box stile PowerPoint (Glassmorphism) */
-        .glass-box { 
-            background: rgba(255, 255, 255, 0.05); 
-            backdrop-filter: blur(12px); 
-            border: 1px solid rgba(255, 255, 255, 0.1); 
+        :root { --accent: #38bdf8; --success: #a6e22e; --warning: #f92672; --bg-card: rgba(30, 41, 59, 0.7); }
+        .reveal { background: #020617; }
+        .glass-card { 
+            background: var(--bg-card); 
+            backdrop-filter: blur(10px); 
+            border: 1px solid rgba(255,255,255,0.1); 
             border-radius: 20px; 
-            padding: 30px; 
-            margin: 20px 0; 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            padding: 35px; 
+            text-align: left;
         }
-
-        h1, h2, h3 { color: var(--accent) !important; text-transform: none !important; }
+        h1, h2, h3 { color: var(--accent) !important; text-transform: none !important; font-weight: 800 !important; }
         .highlight { color: var(--accent); font-weight: bold; }
+        .exercise-box { border: 2px dashed var(--success); padding: 25px; border-radius: 15px; margin-top: 20px; }
+        pre { font-size: 0.6em !important; border-radius: 12px !important; box-shadow: 0 10px 30px rgba(0,0,0,0.5) !important; }
+        .slide-num { position: absolute; bottom: -50px; right: 0; font-size: 0.4em; color: var(--accent); opacity: 0.6; }
+        .theory-text { font-size: 0.8em !important; line-height: 1.5; color: #e2e8f0; }
+        ul li { margin-bottom: 15px; font-size: 0.75em; }
         
-        /* Stile per i blocchi di codice */
-        pre { 
-            background: #020617 !important; 
-            border-left: 5px solid var(--accent) !important; 
-            border-radius: 12px !important; 
-            padding: 20px !important;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.4);
-        }
-
-        ul { font-size: 0.8em; line-height: 1.6; }
-        .source-link { font-size: 0.6em !important; color: #ae81ff !important; }
+        .sito-item { margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .sito-url { color: var(--accent); font-family: monospace; font-size: 0.85em; display: block; }
+        .sito-desc { font-size: 0.65em; color: #94a3b8; display: block; margin-top: 5px; }
     </style>
 </head>
 <body>
     <div class="reveal">
         <div class="slides">
 
-            <section data-background-gradient="linear-gradient(to bottom, #0f172a, #1e293b)">
-                <h1 style="font-size: 3em;">DDL in SQL</h1>
-                <div style="width: 200px; height: 6px; background: var(--accent); margin: 20px auto; border-radius: 10px;"></div>
-                <p>Struttura e gestione dei database</p>
-                <p style="font-size: 0.5em; opacity: 0.5; margin-top: 50px;">Usa le frecce per navigare</p>
+            <section data-background-gradient="radial-gradient(#1e293b, #020617)">
+                <h1 style="font-size: 3em;">I comandi del DDL</h1>
+                <div style="width: 150px; height: 5px; background: var(--accent); margin: 20px auto; border-radius: 10px;"></div>
+                <p style="letter-spacing: 3px; font-weight: 300;">SQL DATA DEFINITION LANGUAGE</p>
+                <p style="font-size: 0.55em; color: #cbd5e1; margin-top: 50px; line-height: 1.6;">
+                    Nicola Meluzzi • Fabio Passanti<br>
+                    Alma Billi • Alessandro Venturi
+                </p>
             </section>
 
             <section>
-                <h2>Cos'è il DDL?</h2>
-                <div class="glass-box">
-                    <p>Il <span class="highlight">DDL (Data Definition Language)</span> permette di creare e modificare la struttura dei database.</p>
-                    <div style="display: flex; justify-content: space-around; margin-top: 20px;">
-                        <ul style="list-style: none;">
-                            <li class="fragment">🔹 CREATE DATABASE</li>
-                            <li class="fragment">🔹 CREATE TABLE</li>
+                <section>
+                    <h3>Slide 2: Sintassi Base CREATE</h3>
+                    <div class="glass-card">
+                        <p class="theory-text">Il comando <span class="highlight">CREATE TABLE</span> definisce la struttura di una nuova relazione (tabella) nel database, specificando il nome e le caratteristiche fisiche dei dati.</p>
+                        <pre><code class="language-sql">-- Sintassi Formale
+CREATE TABLE nome_tabella (
+    colonna_1 tipo_dato,
+    colonna_2 tipo_dato,
+    ...
+);</code></pre>
+                    </div>
+                    <div class="slide-num">Slide 2</div>
+                </section>
+                <section>
+                    <h3>Slide 3: Definizione delle Colonne</h3>
+                    <div class="glass-card">
+                        <ul class="theory-text">
+                            <li>Ogni colonna rappresenta un <b>attributo</b> specifico dell'entità.</li>
+                            <li>Il <b>dominio</b> (tipo di dato) limita i valori inseribili per coerenza.</li>
+                            <li>Sintassi: Nome Colonna + Spazio + Tipo + Virgola finale.</li>
                         </ul>
-                        <ul style="list-style: none;">
-                            <li class="fragment">🔹 ALTER TABLE</li>
-                            <li class="fragment">🔹 DROP TABLE</li>
+                        <pre><code class="language-sql">CREATE TABLE Anagrafica (
+    codice_id INT,
+    nominativo VARCHAR(100)
+);</code></pre>
+                    </div>
+                    <div class="slide-num">Slide 3</div>
+                </section>
+                <section>
+                    <h3>Slide 4: Esempio e Esercizio</h3>
+                    <div class="glass-card">
+                        <pre><code class="language-sql">CREATE TABLE Studenti (
+    id_studente INT,
+    nome VARCHAR(50),
+    media_voti FLOAT
+);</code></pre>
+                        <div class="exercise-box">
+                            <p class="theory-text" style="color: var(--success); font-weight: bold;">ESERCIZIO:</p>
+                            <p class="theory-text">Crea una tabella <b>Corsi</b> con almeno 3 campi (es. ID, NomeCorso, Durata in ore).</p>
+                        </div>
+                    </div>
+                    <div class="slide-num">Slide 4</div>
+                </section>
+            </section>
+
+            <section>
+                <section>
+                    <h3>Slide 5: Tipi Numerici</h3>
+                    <div class="glass-card">
+                        <p class="theory-text">L'efficienza dello storage dipende dalla scelta del numero:</p>
+                        <ul class="theory-text">
+                            <li><span class="highlight">INT:</span> Interi a 32-bit (range ±2 miliardi).</li>
+                            <li><span class="highlight">DECIMAL(p,s):</span> Precisione fissa per valuta e finanza.</li>
+                            <li><span class="highlight">FLOAT / DOUBLE:</span> Precisione variabile per calcoli scientifici.</li>
                         </ul>
                     </div>
-                </div>
-            </section>
-
-            <section>
-                <h3>Gestione Database</h3>
-                <div class="glass-box">
-                    <p class="highlight">Creazione:</p>
-                    <pre><code class="language-sql">CREATE DATABASE Scuola;</code></pre>
-                    <p class="highlight" style="margin-top: 20px;">Eliminazione:</p>
-                    <pre><code class="language-sql">DROP DATABASE Scuola;</code></pre>
-                </div>
-            </section>
-
-            <section>
-                <h3>Creazione Tabelle</h3>
-                <div class="glass-box">
-                    <pre><code class="language-sql" data-line-numbers="1|2|3|4|5">CREATE TABLE Studenti (
-    ID INT PRIMARY KEY,
-    Nome VARCHAR(50) NOT NULL,
-    Eta INT CHECK (Eta >= 6)
-);</code></pre>
-                    <p style="font-size: 0.6em; opacity: 0.7;">Specifica Campi, Tipi e Vincoli nello stesso comando.</p>
-                </div>
-            </section>
-
-            <section>
-                <h3>Modifica ed Eliminazione</h3>
-                <div class="glass-box">
-                    <p class="highlight">Aggiungere una colonna:</p>
-                    <pre><code class="language-sql">ALTER TABLE Studenti ADD Email VARCHAR(100);</code></pre>
-                    <p class="highlight" style="margin-top: 20px;">Eliminare la tabella:</p>
-                    <pre><code class="language-sql">DROP TABLE Studenti;</code></pre>
-                </div>
-            </section>
-
-            <section>
-                <h3>Modifiche Avanzate</h3>
-                <div class="glass-box">
-                    <pre><code class="language-sql">-- Rimuovere una colonna
-ALTER TABLE Studenti DROP COLUMN Email;
-
--- Aggiungere un vincolo complesso
-ALTER TABLE Studenti 
-ADD CONSTRAINT chk_eta 
-CHECK (Eta >= 6 AND Eta <= 19);</code></pre>
-                </div>
-            </section>
-
-            <section>
-                <h3>Tipi di Dato</h3>
-                <div class="glass-box" style="display: flex; align-items: center; gap: 20px;">
-                    <ul style="flex: 1;">
-                        <li><b class="highlight">INT</b> → Numeri interi</li>
-                        <li><b class="highlight">DECIMAL</b> → Prezzi/Valute</li>
-                        <li><b class="highlight">VARCHAR</b> → Testi e stringhe</li>
-                        <li><b class="highlight">DATE</b> → Date (AAAA-MM-GG)</li>
-                    </ul>
-                    <pre style="flex: 1;"><code class="language-sql" style="font-size: 0.7em;">CREATE TABLE Prodotti (
-  ID INT PRIMARY KEY,
-  Prezzo DECIMAL(6,2),
-  Disponibile BOOLEAN
-);</code></pre>
-                </div>
-            </section>
-
-            <section>
-                <h3>Vincoli SQL (Constraints)</h3>
-                <div class="glass-box">
-                    <div style="columns: 2;">
-                        <p>✅ <span class="highlight">NOT NULL</span>: Obbligatorio</p>
-                        <p>✅ <span class="highlight">UNIQUE</span>: Non duplicabile</p>
-                        <p>✅ <span class="highlight">PRIMARY KEY</span>: ID Unico</p>
-                        <p>✅ <span class="highlight">CHECK</span>: Regola logica</p>
+                    <div class="slide-num">Slide 5</div>
+                </section>
+                <section>
+                    <h3>Slide 6: Stringhe e Testi</h3>
+                    <div class="glass-card">
+                        <p class="theory-text">Gestione dei dati alfanumerici:</p>
+                        <ul class="theory-text">
+                            <li><span class="highlight">VARCHAR(n):</span> Lunghezza variabile (occupa solo ciò che scrivi).</li>
+                            <li><span class="highlight">CHAR(n):</span> Lunghezza fissa (ideale per codici di stato).</li>
+                            <li><span class="highlight">TEXT:</span> Memorizzazione di blocchi di testo massivi.</li>
+                        </ul>
                     </div>
-                    <pre style="margin-top: 20px;"><code class="language-sql">CREATE TABLE Utenti (
-  Email VARCHAR(50) UNIQUE,
-  Eta INT CHECK (Eta >= 18)
+                    <div class="slide-num">Slide 6</div>
+                </section>
+                <section>
+                    <h3>Slide 7: Date e Booleani</h3>
+                    <div class="glass-card">
+                        <p class="theory-text">Dati temporali e flag logici:</p>
+                        <ul class="theory-text">
+                            <li><span class="highlight">DATE:</span> Gestisce solo Anno, Mese e Giorno.</li>
+                            <li><span class="highlight">TIMESTAMP:</span> Registra istanti precisi con data e ora.</li>
+                            <li><span class="highlight">BOOLEAN:</span> Supporta solo 1 (TRUE) o 0 (FALSE).</li>
+                        </ul>
+                    </div>
+                    <div class="slide-num">Slide 7</div>
+                </section>
+                <section>
+                    <h3>Slide 8: Esempio e Esercizio</h3>
+                    <pre><code class="language-sql">CREATE TABLE Prodotti (
+    id INT,
+    nome VARCHAR(50),
+    prezzo DECIMAL(10,2),
+    scadenza DATE,
+    disponibile BOOLEAN
 );</code></pre>
-                </div>
+                    <div class="exercise-box">
+                        <p class="theory-text" style="color: var(--success); font-weight: bold;">ESERCIZIO:</p>
+                        <p class="theory-text">Quali tipi di dato useresti per un'applicazione Meteo (Temp, Città, Pioggia)?</p>
+                    </div>
+                    <div class="slide-num">Slide 8</div>
+                </section>
             </section>
 
             <section>
-                <h3>Sitografia 📚</h3>
-                <div class="glass-box">
-                    <ul style="font-size: 0.6em;">
-                        <li>🔗 <a class="source-link" href="https://www.w3schools.com/sql/">W3Schools - SQL Tutorial</a></li>
-                        <li>🔗 <a class="source-link" href="https://dev.mysql.com/doc/">MySQL Official Documentation</a></li>
-                        <li>🔗 <a class="source-link" href="https://sql.sh/">SQL.sh - Risorse SQL</a></li>
-                        <li>🔗 <a class="source-link" href="#">Appunti personali del corso</a></li>
-                    </ul>
-                </div>
+                <section>
+                    <h3>Slide 9: Vincoli di Integrità</h3>
+                    <div class="glass-card">
+                        <p class="theory-text">I vincoli assicurano che i dati rispettino le regole di business prima di essere salvati permanentemente.</p>
+                        <ul class="theory-text">
+                            <li>Garantiscono l'accuratezza dei dati nel tempo.</li>
+                            <li>Evitano la ridondanza o l'incoerenza logica.</li>
+                        </ul>
+                    </div>
+                    <div class="slide-num">Slide 9</div>
+                </section>
+                <section>
+                    <h3>Slide 10: PK, NOT NULL, UNIQUE</h3>
+                    <div class="glass-card theory-text">
+                        <p><span class="highlight">PRIMARY KEY:</span> L'ancora della tabella. Unica e mai nulla.</p>
+                        <p><span class="highlight">NOT NULL:</span> Obbliga la compilazione del campo (es. Cognome).</p>
+                        <p><span class="highlight">UNIQUE:</span> Impedisce valori uguali (es. Codice Fiscale).</p>
+                    </div>
+                    <div class="slide-num">Slide 10</div>
+                </section>
+                <section>
+                    <h3>Slide 11: Il vincolo CHECK</h3>
+                    <div class="glass-card">
+                        <p class="theory-text">Il <span class="highlight">CHECK</span> permette di definire una condizione personalizzata di validità.</p>
+                        <pre><code class="language-sql">-- Controllo età minima
+eta INT CHECK (eta >= 18)
+
+-- Controllo range voti
+voto INT CHECK (voto >= 1 AND voto <= 10)</code></pre>
+                    </div>
+                    <div class="slide-num">Slide 11</div>
+                </section>
+                <section>
+                    <h3>Slide 12: Esempio e Esercizio</h3>
+                    <pre><code class="language-sql">CREATE TABLE Clienti (
+    id INT PRIMARY KEY,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    eta INT CHECK (eta >= 18)
+);</code></pre>
+                    <div class="exercise-box">
+                        <p class="theory-text" style="color: var(--success); font-weight: bold;">ESERCIZIO:</p>
+                        <p class="theory-text">Crea una tabella <b>Film</b> dove la durata deve essere superiore a 1 minuto.</p>
+                    </div>
+                    <div class="slide-num">Slide 12</div>
+                </section>
+            </section>
+
+            <section>
+                <section>
+                    <h3>Slide 13: ALTER TABLE - Evoluzione</h3>
+                    <div class="glass-card">
+                        <p class="theory-text">Permette di modificare tabelle esistenti senza doverle distruggere e ricostruire.</p>
+                        <pre><code class="language-sql">-- Nuova colonna
+ALTER TABLE Studenti ADD telefono VARCHAR(20);
+
+-- Cambio tipo dato
+ALTER TABLE Studenti ALTER COLUMN nome TYPE VARCHAR(150);</code></pre>
+                    </div>
+                    <div class="slide-num">Slide 13</div>
+                </section>
+                <section>
+                    <h3>Slide 14: DROP COLUMN e Constraint</h3>
+                    <div class="glass-card">
+                        <p class="theory-text">Raffinamento della struttura in fase di manutenzione:</p>
+                        <pre><code class="language-sql">-- Rimuovere colonna obsoleta
+ALTER TABLE Studenti DROP COLUMN media_voti;
+
+-- Aggiungere vincolo post-creazione
+ALTER TABLE Studenti ADD UNIQUE (email);</code></pre>
+                    </div>
+                    <div class="slide-num">Slide 14</div>
+                </section>
+                <section>
+                    <h3>Slide 15: DROP TABLE - Distruzione</h3>
+                    <div class="glass-card">
+                        <p class="theory-text" style="color: var(--warning);">OPERAZIONE CRITICA: Non esiste "Cestino".</p>
+                        <p class="theory-text">Il comando <span class="highlight">DROP TABLE</span> cancella lo schema e tutti i dati in esso contenuti istantaneamente.</p>
+                        <pre><code class="language-sql">DROP TABLE Studenti; -- Tabella eliminata</code></pre>
+                    </div>
+                    <div class="slide-num">Slide 15</div>
+                </section>
+                <section>
+                    <h3>Slide 16: Esercizio Finale</h3>
+                    <div class="glass-card">
+                        <div class="exercise-box">
+                            <p class="theory-text" style="color: var(--success); font-weight: bold;">ESERCIZIO DI GRUPPO:</p>
+                            <p class="theory-text">1. Aggiungi la colonna "Indirizzo" alla tabella Corsi.<br>2. Elimina definitivamente la tabella Corsi.</p>
+                        </div>
+                    </div>
+                    <div class="slide-num">Slide 16</div>
+                </section>
+            </section>
+
+            <section>
+                <section>
+                    <h2>Sitografia e Fonti</h2>
+                    <div class="glass-card">
+                        <div class="sito-item">
+                            <a class="sito-url">https://www.w3schools.com/sql/</a>
+                            <span class="sito-desc">Standard mondiale per la sintassi DDL. Consultato per la conformità ISO dei comandi CREATE e ALTER.</span>
+                        </div>
+                        <div class="sito-item">
+                            <a class="sito-url">https://dev.mysql.com/doc/refman/8.0/en/</a>
+                            <span class="sito-desc">Manuale ufficiale MySQL. Utilizzato per l'approfondimento sui limiti fisici dei tipi di dato e storage engine.</span>
+                        </div>
+                        <div class="sito-item">
+                            <a class="sito-url">https://sql.sh/</a>
+                            <span class="sito-desc">Portale specializzato in SQL avanzato. Fondamentale per le best practices sui vincoli di integrità.</span>
+                        </div>
+                    </div>
+                </section>
+                <section>
+                    <h2>Approfondimenti Tecnici</h2>
+                    <div class="glass-card">
+                        <div class="sito-item">
+                            <a class="sito-url">https://www.postgresql.org/docs/</a>
+                            <span class="sito-desc">Documentazione PostgreSQL: utilizzata per studiare i vincoli complessi e le differenze tra dialetti SQL.</span>
+                        </div>
+                        <div class="sito-item">
+                            <a class="sito-url">https://www.geeksforgeeks.org/sql-ddl-commands/</a>
+                            <span class="sito-desc">Analisi accademica sulla gerarchia dei comandi DDL rispetto alla manipolazione dei metadati.</span>
+                        </div>
+                    </div>
+                    <p style="font-size: 0.4em; opacity: 0.5; margin-top: 20px;">Grazie per l'attenzione!</p>
+                </section>
             </section>
 
         </div>
@@ -166,9 +283,10 @@ CHECK (Eta >= 6 AND Eta <= 19);</code></pre>
     <script>
         Reveal.initialize({
             hash: true,
-            transition: 'convex', // Transazione 3D tipo PowerPoint
             center: true,
-            plugins: [ RevealHighlight ]
+            transition: 'convex',
+            plugins: [ RevealHighlight ],
+            controlsLayout: 'edges'
         });
     </script>
 </body>
