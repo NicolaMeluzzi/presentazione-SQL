@@ -2,755 +2,157 @@
 <html lang="it">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>FantamotoGP Arena - Gioca con gli Amici</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Il Rifugio LGBTQ+ | Pub & Vibes a Palazzuolo sul Senio</title>
+    <script src="https://tailwindcss.com"></script>
+    <link href="https://cloudflare.com" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', 'Inter', 'Poppins', system-ui, sans-serif;
-        }
-
-        body {
-            background: linear-gradient(145deg, #0a0c15 0%, #0e1120 100%);
-            min-height: 100vh;
-            color: #f0f3fa;
-        }
-
-        /* Login Overlay */
-        .login-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.95);
-            backdrop-filter: blur(12px);
-            z-index: 2000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s ease;
-        }
-
-        .login-card {
-            background: linear-gradient(135deg, #1a1f2e, #0f1422);
-            border-radius: 2rem;
-            padding: 2.5rem;
-            max-width: 450px;
-            width: 90%;
-            border: 1px solid rgba(255, 180, 60, 0.4);
-            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.8);
-            animation: slideUp 0.4s ease;
-        }
-
-        @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .login-card h2 {
-            font-size: 2rem;
-            background: linear-gradient(135deg, #FFD966, #FF9F4A);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            margin-bottom: 0.5rem;
-        }
-
-        .login-input {
-            width: 100%;
-            padding: 1rem;
-            margin: 1rem 0;
-            background: #0f1725;
-            border: 1px solid #2d3e5a;
-            border-radius: 1rem;
-            color: white;
-            font-size: 1rem;
-            transition: 0.2s;
-        }
-
-        .login-input:focus {
-            outline: none;
-            border-color: #ff9f4a;
-            box-shadow: 0 0 0 2px rgba(255, 159, 74, 0.3);
-        }
-
-        .login-btn {
-            width: 100%;
-            padding: 1rem;
-            background: linear-gradient(135deg, #d97706, #f59e0b);
-            border: none;
-            border-radius: 1rem;
-            font-weight: bold;
-            font-size: 1.1rem;
-            color: #0a0f1e;
-            cursor: pointer;
-            margin-top: 1rem;
-            transition: 0.2s;
-        }
-
-        .login-btn:hover {
-            transform: scale(1.02);
-            box-shadow: 0 5px 20px rgba(245, 158, 11, 0.4);
-        }
-
-        .login-note {
-            font-size: 0.8rem;
-            text-align: center;
-            margin-top: 1.5rem;
-            color: #aaa;
-        }
-
-        /* Main App (hidden until login) */
-        .app-container {
-            max-width: 1500px;
-            margin: 0 auto;
-            padding: 1.5rem;
-        }
-
-        /* Header */
-        .hero {
-            background: linear-gradient(135deg, rgba(20, 28, 45, 0.9), rgba(10, 15, 28, 0.95));
-            backdrop-filter: blur(12px);
-            border-radius: 2rem;
-            padding: 1.5rem 2rem;
-            margin-bottom: 2rem;
-            border: 1px solid rgba(255, 180, 60, 0.3);
-        }
-
-        .hero-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 1rem;
-        }
-
-        .hero h1 {
-            font-size: 2rem;
-            font-weight: 800;
-            background: linear-gradient(135deg, #FFD966, #FF9F4A, #FF6A3D);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-        }
-
-        .user-info {
-            background: #1e2a3a;
-            padding: 0.5rem 1.2rem;
-            border-radius: 60px;
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .logout-btn {
-            background: #dc2626;
-            border: none;
-            padding: 0.4rem 1rem;
-            border-radius: 2rem;
-            color: white;
-            cursor: pointer;
-            font-size: 0.8rem;
-        }
-
-        .punteggio-box {
-            background: #1a2538;
-            padding: 0.6rem 1.4rem;
-            border-radius: 60px;
-            font-weight: 700;
-            border-left: 4px solid #ff9f4a;
-        }
-
-        /* Sezioni */
-        .section-title {
-            font-size: 1.6rem;
-            font-weight: 700;
-            margin: 1.8rem 0 1.2rem 0;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            border-left: 5px solid #ff9f4a;
-            padding-left: 18px;
-        }
-
-        /* Griglia piloti */
-        .piloti-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 1.2rem;
-            margin-bottom: 2rem;
-        }
-
-        .card-pilota {
-            background: rgba(25, 35, 55, 0.7);
-            backdrop-filter: blur(4px);
-            border-radius: 1.2rem;
-            padding: 1rem;
-            transition: all 0.2s ease;
-            border: 1px solid rgba(255,255,255,0.08);
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .card-pilota:hover {
-            transform: translateY(-3px);
-            background: #2a3a4f;
-            border-color: #ffaa55;
-        }
-
-        .card-pilota.selezionato {
-            background: linear-gradient(125deg, #1f3e4a, #15323d);
-            border-left: 5px solid #ffaa33;
-        }
-
-        .pilota-avatar {
-            width: 55px;
-            height: 55px;
-            background: #1e2f3c;
-            border-radius: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.8rem;
-        }
-
-        .info-pilota {
-            flex: 1;
-        }
-
-        .nome-pilota {
-            font-weight: 800;
-            font-size: 1rem;
-        }
-
-        .moto-team {
-            font-size: 0.7rem;
-            opacity: 0.7;
-        }
-
-        .badge-wildcard {
-            background: #7c3aed;
-            font-size: 0.65rem;
-            padding: 2px 8px;
-            border-radius: 20px;
-            margin-left: 8px;
-        }
-
-        /* Rosa */
-        .rosa-section {
-            background: rgba(0, 0, 0, 0.4);
-            border-radius: 1.5rem;
-            padding: 1.2rem 1.5rem;
-            margin: 1.5rem 0;
-            border: 1px solid #3a4a62;
-        }
-
-        .rosa-list {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 12px;
-            margin-top: 1rem;
-        }
-
-        .rosa-item {
-            background: #121c2a;
-            padding: 0.6rem 1rem;
-            border-radius: 60px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .btn-nomina-cap {
-            background: #ffaa3344;
-            border: none;
-            border-radius: 30px;
-            padding: 3px 12px;
-            font-size: 0.7rem;
-            color: #ffcd7e;
-            cursor: pointer;
-        }
-
-        .elimina-rosa {
-            background: none;
-            border: none;
-            color: #ff8866;
-            cursor: pointer;
-            font-size: 1.1rem;
-        }
-
-        /* Classifica Amici */
-        .classifica-amici {
-            background: #050b16aa;
-            border-radius: 1.5rem;
-            padding: 1rem;
-            overflow-x: auto;
-            margin-top: 1rem;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        th, td {
-            padding: 12px 10px;
-            text-align: left;
-            border-bottom: 1px solid #2a3a50;
-        }
-
-        th {
-            color: #ffaa55;
-        }
-
-        .race-panel {
-            background: #0c1220cc;
-            border-radius: 1.8rem;
-            padding: 1.5rem;
-            margin: 1.8rem 0;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1rem;
-            justify-content: center;
-        }
-
-        .btn-race {
-            background: #2d3e4e;
-            border: none;
-            padding: 0.8rem 1.8rem;
-            border-radius: 60px;
-            font-weight: bold;
-            font-size: 1rem;
-            color: #ffde9c;
-            cursor: pointer;
-            transition: 0.2s;
-            flex: 1;
-            min-width: 160px;
-        }
-
-        .btn-race.primary {
-            background: #d97706;
-            color: #0a0f1e;
-        }
-
-        .toast-msg {
-            position: fixed;
-            bottom: 25px;
-            right: 25px;
-            background: #1e2a3a;
-            backdrop-filter: blur(12px);
-            padding: 12px 24px;
-            border-radius: 40px;
-            border-left: 5px solid #ffaa55;
-            z-index: 1000;
-            animation: fadeIn 0.2s ease;
-            max-width: 400px;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateX(40px);}
-            to { opacity: 1; transform: translateX(0);}
-        }
-
-        footer {
-            text-align: center;
-            margin-top: 2rem;
-            font-size: 0.75rem;
-            opacity: 0.6;
-        }
-
-        @media (max-width: 700px) {
-            .app-container { padding: 1rem; }
-            .hero h1 { font-size: 1.5rem; }
+        @import url('https://googleapis.com');
+        
+        body { font-family: 'Montserrat', sans-serif; }
+        h1, h2, .font-serif { font-family: 'Playfair Display', serif; }
+        
+        .rainbow-gradient {
+            background: linear-gradient(90deg, #ff0000, #ff8700, #ffd300, #deff0a, #a1ff0a, #0aff99, #0aefff, #147df5, #580aff, #be0aff);
+            height: 4px;
         }
     </style>
 </head>
-<body>
-    <!-- Login Overlay -->
-    <div id="loginOverlay" class="login-overlay">
-        <div class="login-card">
-            <h2>🏁 FANTOMOTOGP ARENA</h2>
-            <p style="margin-bottom: 1.5rem; color: #ccc;">Accedi per giocare con gli amici</p>
-            <input type="text" id="loginEmailTel" class="login-input" placeholder="Email o numero di telefono" value="nicomeluzzi@gmail.com">
-            <input type="text" id="loginNome" class="login-input" placeholder="Il tuo nome / nickname" value="Nico">
-            <button id="loginBtn" class="login-btn">🎮 ENTRA IN GARA</button>
-            <div class="login-note">
-                🔐 Accedi con nicomeluzzi@gmail.com o 3277164461<br>
-                I tuoi dati e la tua squadra vengono salvati localmente
+<body class="bg-stone-900 text-stone-100">
+
+    <div class="rainbow-gradient"></div>
+
+    <!-- Header -->
+    <nav class="p-6 flex justify-between items-center bg-stone-800/50 backdrop-blur-md sticky top-0 z-50">
+        <div class="text-2xl font-bold tracking-tighter">
+            QUEER<span class="text-amber-500">OAK</span> PUB
+        </div>
+        <div class="hidden md:flex space-x-8 text-sm uppercase tracking-widest font-semibold">
+            <a href="#storia" class="hover:text-amber-500 transition">Noi</a>
+            <a href="#menu" class="hover:text-amber-500 transition">Menu</a>
+            <a href="#eventi" class="hover:text-amber-500 transition">Eventi</a>
+            <a href="#contatti" class="hover:text-amber-500 transition">Dove Siamo</a>
+        </div>
+        <a href="https://wa.me" class="bg-amber-600 hover:bg-amber-500 px-5 py-2 rounded-full text-sm font-bold transition">Prenota</a>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="relative h-[80vh] flex items-center justify-center text-center px-4 overflow-hidden">
+        <div class="absolute inset-0 bg-black/60 z-10"></div>
+        <!-- Placeholder per immagine di sfondo -->
+        <div class="absolute inset-0 bg-[url('https://unsplash.com')] bg-cover bg-center opacity-40"></div>
+        
+        <div class="relative z-20 max-w-3xl">
+            <span class="uppercase tracking-[0.3em] text-amber-400 font-bold mb-4 block">Palazzuolo sul Senio</span>
+            <h1 class="text-5xl md:text-7xl mb-6">Birra, Amore e Libertà.</h1>
+            <p class="text-xl text-stone-300 mb-8 italic">Il primo pub LGBTQ+ friendly nel cuore dell'Appennino Tosco-Romagnolo.</p>
+            <div class="flex flex-col md:flex-row gap-4 justify-center">
+                <a href="#menu" class="border-2 border-white px-8 py-3 hover:bg-white hover:text-black transition font-bold uppercase text-sm">Vedi il Menu</a>
+                <a href="#storia" class="bg-white text-black px-8 py-3 hover:bg-amber-400 transition font-bold uppercase text-sm">La Nostra Storia</a>
             </div>
         </div>
-    </div>
+    </header>
 
-    <!-- Main App (hidden until login) -->
-    <div id="mainApp" style="display: none;">
-        <div class="app-container">
-            <div class="hero">
-                <div class="hero-header">
-                    <h1>🏁 FANTOMOTOGP ARENA 🏍️</h1>
-                    <div class="user-info">
-                        <span id="userNameDisplay">Utente</span>
-                        <span id="userContactDisplay"></span>
-                        <button id="logoutBtnMain" class="logout-btn">🚪 Esci</button>
-                    </div>
-                </div>
-                <div class="hero-header" style="margin-top: 1rem;">
-                    <div class="punteggio-box" id="punteggioTotaleDisplay">Punti Totali: 0</div>
-                    <div style="font-size: 0.8rem;">⭐ Capitano x1.5 • 🃏 Wildcard +3 scuderia</div>
-                </div>
+    <!-- La Nostra Storia -->
+    <section id="storia" class="py-20 px-6 max-w-5xl mx-auto grid md:grid-cols-2 gap-12 items-center">
+        <div>
+            <h2 class="text-4xl mb-6 italic">Un sogno di coppia, <br>una casa per tutti.</h2>
+            <p class="text-stone-400 mb-4 leading-relaxed">
+                Siamo Marco e Luca. Abbiamo lasciato la città per riportare vita e colori tra queste montagne. <strong>QueerOak</strong> non è solo un pub: è il nostro salotto dove ogni persona, di ogni genere e orientamento, è la benvenuta.
+            </p>
+            <p class="text-stone-400 leading-relaxed">
+                Qui troverai birre artigianali locali, taglieri a km zero e un'atmosfera dove puoi essere chiunque tu voglia. Senza giudizi, solo sorrisi.
+            </p>
+            <div class="mt-8 flex gap-4 text-3xl text-amber-500">
+                <i class="fa-solid fa-heart"></i>
+                <i class="fa-solid fa-rainbow"></i>
+                <i class="fa-solid fa-beer-mug-empty"></i>
             </div>
-
-            <!-- Selezione Piloti (TUTTI i piloti MotoGP) -->
-            <div class="section-title">
-                <span>⚡ TUTTI I PILOTI MOTOGP 2025</span>
-                <span style="font-size: 0.75rem;">max 4 piloti | 1 capitano (x1.5) | wildcard bonus</span>
-            </div>
-            <div id="pilotiContainer" class="piloti-grid"></div>
-
-            <!-- La tua Squadra -->
-            <div class="rosa-section">
-                <div style="display: flex; justify-content: space-between; flex-wrap: wrap;">
-                    <h3>🏍️ LA TUA SQUADRA (max 4 piloti)</h3>
-                    <span id="limiteMsg" style="color:#ffaa55;"></span>
-                </div>
-                <div id="rosaLista" class="rosa-list">
-                    <div style="opacity:0.6;">Nessun pilota selezionato. Clicca sulle card per costruire la squadra.</div>
-                </div>
-            </div>
-
-            <!-- Classifica Amici -->
-            <div class="section-title">
-                <span>👥 CLASSIFICA LEGA AMICI</span>
-                <button id="invitaAmicoBtn" style="background: #2d4a6e; border: none; padding: 0.3rem 1rem; border-radius: 2rem; cursor: pointer;">📧 Invita Amico</button>
-            </div>
-            <div class="classifica-amici">
-                <table>
-                    <thead>
-                        <tr><th>Pos</th><th>Giocatore</th><th>Contatto</th><th>Punti Totali</th><th>Squadra</th></tr>
-                    </thead>
-                    <tbody id="classificaBody"></tbody>
-                </table>
-                <div style="margin-top: 12px; font-size: 12px; text-align:center;">※ I tuoi amici possono accedere con la loro email e vedranno questa classifica condivisa</div>
-            </div>
-
-            <!-- Pannello Gara -->
-            <div class="race-panel">
-                <button class="btn-race primary" id="simulaGaraBtn">🏁 SIMULA GRAN PREMIO 🏁</button>
-                <button class="btn-race" id="azzeraGaraBtn">🔄 Reset Punteggi Totali</button>
-            </div>
-            <footer>• Ogni pilota ottiene punteggio casuale (5-28) • Capitano x1.5 • Scuderia: somma punti piloti + bonus wildcard (+3 se wildcard in squadra)</footer>
         </div>
-    </div>
+        <div class="bg-stone-800 h-96 rounded-2xl flex items-center justify-center border border-stone-700">
+            <span class="text-stone-500">[Inserisci qui una foto di voi due dietro al bancone]</span>
+        </div>
+    </section>
 
-    <script>
-        // ---------- TUTTI I PILOTI MOTOGP (22 piloti reali) ----------
-        const pilotiData = [
-            { id: 1, nome: "F. Bagnaia", team: "Ducati Lenovo", scuderia: "Ducati", valoreBase: 24, wildcard: false, icona: "🏍️", naz: "🇮🇹" },
-            { id: 2, nome: "J. Martin", team: "Prima Pramac", scuderia: "Ducati", valoreBase: 23, wildcard: false, icona: "⚡", naz: "🇪🇸" },
-            { id: 3, nome: "M. Marquez", team: "Gresini", scuderia: "Ducati", valoreBase: 25, wildcard: false, icona: "🐯", naz: "🇪🇸" },
-            { id: 4, nome: "E. Bastianini", team: "Ducati Lenovo", scuderia: "Ducati", valoreBase: 22, wildcard: false, icona: "🐍", naz: "🇮🇹" },
-            { id: 5, nome: "B. Binder", team: "Red Bull KTM", scuderia: "KTM", valoreBase: 20, wildcard: false, icona: "🔥", naz: "🇿🇦" },
-            { id: 6, nome: "P. Acosta", team: "Tech3 KTM", scuderia: "KTM", valoreBase: 21, wildcard: true, icona: "🚀", naz: "🇪🇸" },
-            { id: 7, nome: "F. Quartararo", team: "Monster Yamaha", scuderia: "Yamaha", valoreBase: 18, wildcard: false, icona: "🐺", naz: "🇫🇷" },
-            { id: 8, nome: "A. Rins", team: "Monster Yamaha", scuderia: "Yamaha", valoreBase: 16, wildcard: false, icona: "🏁", naz: "🇪🇸" },
-            { id: 9, nome: "M. Viñales", team: "Aprilia Racing", scuderia: "Aprilia", valoreBase: 19, wildcard: false, icona: "💨", naz: "🇪🇸" },
-            { id: 10, nome: "A. Espargaro", team: "Aprilia Racing", scuderia: "Aprilia", valoreBase: 18, wildcard: false, icona: "🌪️", naz: "🇪🇸" },
-            { id: 11, nome: "L. Marini", team: "Honda HRC", scuderia: "Honda", valoreBase: 14, wildcard: false, icona: "🏍️", naz: "🇮🇹" },
-            { id: 12, nome: "J. Zarco", team: "LCR Honda", scuderia: "Honda", valoreBase: 15, wildcard: true, icona: "🃏", naz: "🇫🇷" },
-            { id: 13, nome: "M. Oliveira", team: "Trackhouse", scuderia: "Aprilia", valoreBase: 16, wildcard: false, icona: "🇵🇹", naz: "🇵🇹" },
-            { id: 14, nome: "R. Fernandez", team: "Trackhouse", scuderia: "Aprilia", valoreBase: 14, wildcard: false, icona: "🇪🇸", naz: "🇪🇸" },
-            { id: 15, nome: "A. Marquez", team: "Gresini", scuderia: "Ducati", valoreBase: 17, wildcard: false, icona: "🌟", naz: "🇪🇸" },
-            { id: 16, nome: "F. Di Giannantonio", team: "VR46", scuderia: "Ducati", valoreBase: 17, wildcard: false, icona: "🇮🇹", naz: "🇮🇹" },
-            { id: 17, nome: "M. Bezzecchi", team: "VR46", scuderia: "Ducati", valoreBase: 18, wildcard: false, icona: "🇮🇹", naz: "🇮🇹" },
-            { id: 18, nome: "J. Miller", team: "Red Bull KTM", scuderia: "KTM", valoreBase: 16, wildcard: false, icona: "🇦🇺", naz: "🇦🇺" },
-            { id: 19, nome: "A. Fernandez", team: "Tech3 KTM", scuderia: "KTM", valoreBase: 14, wildcard: false, icona: "🇪🇸", naz: "🇪🇸" },
-            { id: 20, nome: "T. Nakagami", team: "LCR Honda", scuderia: "Honda", valoreBase: 12, wildcard: false, icona: "🇯🇵", naz: "🇯🇵" },
-            { id: 21, nome: "J. Mir", team: "Honda HRC", scuderia: "Honda", valoreBase: 13, wildcard: false, icona: "🇪🇸", naz: "🇪🇸" },
-            { id: 22, nome: "L. Savadori", team: "Aprilia Racing", scuderia: "Aprilia", valoreBase: 11, wildcard: true, icona: "🃏", naz: "🇮🇹" }
-        ];
-
-        // Sistema di utenti condiviso (localStorage per tutti gli account)
-        let currentUser = null;
-        let allUsers = []; // array di { id, contact, name, team, totalPoints, scuderiaPoints }
-
-        // Funzioni di gestione utenti
-        function loadAllUsers() {
-            const stored = localStorage.getItem('fantamotoGP_allUsers');
-            if (stored) {
-                allUsers = JSON.parse(stored);
-            } else {
-                // Utenti demo di partenza
-                allUsers = [
-                    { id: "nicomeluzzi@gmail.com", contact: "nicomeluzzi@gmail.com", name: "Nico Meluzzi", team: [], totalPoints: 0, scuderiaPoints: 0, captainId: null },
-                    { id: "3277164461", contact: "3277164461", name: "Nico (Telefono)", team: [], totalPoints: 0, scuderiaPoints: 0, captainId: null },
-                    { id: "mario@example.com", contact: "mario@example.com", name: "Mario Rossi", team: [], totalPoints: 0, scuderiaPoints: 0, captainId: null },
-                    { id: "luca@example.com", contact: "luca@example.com", name: "Luca Bianchi", team: [], totalPoints: 85, scuderiaPoints: 42, captainId: 3, team: [{id:1, isCapitano:false},{id:3,isCapitano:true},{id:7,isCapitano:false},{id:11,isCapitano:false}] }
-                ];
-            }
-            // Assicura che ogni utente abbia campi necessari
-            allUsers = allUsers.map(u => ({ ...u, team: u.team || [], totalPoints: u.totalPoints || 0, scuderiaPoints: u.scuderiaPoints || 0 }));
-            saveAllUsers();
-        }
-
-        function saveAllUsers() {
-            localStorage.setItem('fantamotoGP_allUsers', JSON.stringify(allUsers));
-        }
-
-        function findUserByContact(contact) {
-            return allUsers.find(u => u.contact === contact || u.id === contact);
-        }
-
-        function login(contact, displayName) {
-            let user = findUserByContact(contact);
-            if (!user) {
-                // Crea nuovo utente
-                user = {
-                    id: contact,
-                    contact: contact,
-                    name: displayName || contact.split('@')[0],
-                    team: [],
-                    totalPoints: 0,
-                    scuderiaPoints: 0,
-                    captainId: null
-                };
-                allUsers.push(user);
-                saveAllUsers();
-            } else if (displayName && user.name !== displayName) {
-                user.name = displayName;
-                saveAllUsers();
-            }
-            currentUser = user;
-            localStorage.setItem('fantamotoGP_currentUser', JSON.stringify({ contact: user.contact, name: user.name }));
-            return user;
-        }
-
-        function logout() {
-            currentUser = null;
-            localStorage.removeItem('fantamotoGP_currentUser');
-            document.getElementById('loginOverlay').style.display = 'flex';
-            document.getElementById('mainApp').style.display = 'none';
-        }
-
-        function saveCurrentUserData() {
-            if (currentUser) {
-                const index = allUsers.findIndex(u => u.contact === currentUser.contact);
-                if (index !== -1) {
-                    allUsers[index] = { ...currentUser };
-                    saveAllUsers();
-                }
-            }
-        }
-
-        // Funzioni di gioco
-        function getPilotaById(id) {
-            return pilotiData.find(p => p.id === id);
-        }
-
-        function calcolaPunteggioPilota(pilota) {
-            let casuale = Math.floor(Math.random() * 22) + 5;
-            let bonusValore = Math.floor(pilota.valoreBase / 6);
-            return Math.min(32, Math.max(3, casuale + bonusValore - 1));
-        }
-
-        function simulaGara() {
-            if (!currentUser.team || currentUser.team.length === 0) {
-                showToast("❌ Devi selezionare almeno 1 piloto per simulare il GP!");
-                return;
-            }
-
-            let puntiTappaUser = 0;
-            let dettagli = [];
-            let scudMap = new Map();
+    <!-- Menu Teaser -->
+    <section id="menu" class="py-20 bg-stone-800">
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl mb-4">I Nostri Cavalli di Battaglia</h2>
+                <div class="h-1 w-20 bg-amber-500 mx-auto"></div>
+            </div>
             
-            currentUser.team.forEach(membro => {
-                const pilota = getPilotaById(membro.id);
-                let puntiBase = calcolaPunteggioPilota(pilota);
-                let puntiFinali = puntiBase;
-                if (membro.isCapitano) {
-                    puntiFinali = Math.floor(puntiBase * 1.5);
-                }
-                puntiTappaUser += puntiFinali;
-                dettagli.push(`${pilota.nome}: ${puntiBase} → ${puntiFinali} pts ${membro.isCapitano ? '(cap x1.5)' : ''}`);
-                
-                let curr = scudMap.get(pilota.scuderia) || 0;
-                scudMap.set(pilota.scuderia, curr + puntiBase);
-            });
-            
-            let puntiScuderia = 0;
-            for (let val of scudMap.values()) puntiScuderia += val;
-            const haWildcard = currentUser.team.some(m => getPilotaById(m.id).wildcard);
-            if (haWildcard) {
-                puntiScuderia += 3;
-                dettagli.push(`🃏 Bonus WILDCARD: +3 punti scuderia!`);
-            }
-            
-            currentUser.totalPoints += puntiTappaUser;
-            currentUser.scuderiaPoints = puntiScuderia;
-            saveCurrentUserData();
-            
-            showToast(`🏁 GP CONCLUSO! +${puntiTappaUser} punti\n${dettagli.slice(0,3).join('\n')}${dettagli.length>3?'...' : ''}\n🏢 Scuderia: ${puntiScuderia} pts`, 5000);
-            aggiornaUI();
-        }
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Food Item -->
+                <div class="bg-stone-900 p-8 border-b-4 border-amber-500">
+                    <h3 class="text-xl font-bold mb-2">Tagliere "Pride"</h3>
+                    <p class="text-stone-400 text-sm mb-4">Selezione di formaggi di Palazzuolo e salumi toscani con confetture arcobaleno.</p>
+                    <span class="text-amber-500 font-bold">€15.00</span>
+                </div>
+                <!-- Drink Item -->
+                <div class="bg-stone-900 p-8 border-b-4 border-purple-500">
+                    <h3 class="text-xl font-bold mb-2">Birra dell'Alpe</h3>
+                    <p class="text-stone-400 text-sm mb-4">Bionda artigianale cruda prodotta a pochi km dal pub. Fresca e ribelle.</p>
+                    <span class="text-amber-500 font-bold">€6.00</span>
+                </div>
+                <!-- Food Item -->
+                <div class="bg-stone-900 p-8 border-b-4 border-blue-500">
+                    <h3 class="text-xl font-bold mb-2">Burger QueerOak</h3>
+                    <p class="text-stone-400 text-sm mb-4">Manzo locale, cipolla caramellata, pecorino e salsa segreta della casa.</p>
+                    <span class="text-amber-500 font-bold">€12.00</span>
+                </div>
+            </div>
+        </div>
+    </section>
 
-        function resetPunteggi() {
-            if (confirm("⚠️ Resetta tutti i punteggi totali della tua squadra? Gli amici restano invariati.")) {
-                currentUser.totalPoints = 0;
-                currentUser.scuderiaPoints = 0;
-                saveCurrentUserData();
-                aggiornaUI();
-                showToast("Punteggi azzerati!");
-            }
-        }
+    <!-- Eventi/Community -->
+    <section id="eventi" class="py-20 px-6 max-w-4xl mx-auto text-center">
+        <h2 class="text-4xl mb-8 italic text-amber-500 underline decoration-stone-500 underline-offset-8">Non Solo Birra</h2>
+        <div class="grid md:grid-cols-2 gap-8 text-left">
+            <div class="border border-stone-700 p-6 rounded-lg hover:bg-stone-800 transition">
+                <h4 class="font-bold text-amber-500 uppercase tracking-tighter mb-2">Giovedì Boardgames</h4>
+                <p class="text-stone-400">Giochi da tavolo, risate e nuovi incontri. Porta i tuoi amici o trovali qui!</p>
+            </div>
+            <div class="border border-stone-700 p-6 rounded-lg hover:bg-stone-800 transition">
+                <h4 class="font-bold text-amber-500 uppercase tracking-tighter mb-2">Talk & Queer</h4>
+                <p class="text-stone-400">Incontri mensili su diritti, letteratura e storie della comunità LGBTQ+.</p>
+            </div>
+        </div>
+    </section>
 
-        // Gestione squadra
-        function aggiungiPilota(id) {
-            if (currentUser.team.length >= 4) {
-                showToast("Limite massimo: 4 piloti!");
-                return false;
-            }
-            if (currentUser.team.some(p => p.id === id)) {
-                showToast("Pilota già in squadra!");
-                return false;
-            }
-            const nuovo = { id: id, isCapitano: false };
-            currentUser.team.push(nuovo);
-            if (currentUser.team.length === 1) {
-                currentUser.team[0].isCapitano = true;
-                showToast(`⭐ ${getPilotaById(id).nome} è il CAPITANO! (x1.5 punti)`);
-            } else {
-                showToast(`➕ ${getPilotaById(id).nome} aggiunto alla squadra.`);
-            }
-            saveCurrentUserData();
-            renderListaPiloti();
-            renderRosa();
-            aggiornaClassifica();
-            return true;
-        }
+    <!-- Footer / Contatti -->
+    <footer id="contatti" class="bg-stone-950 pt-20 pb-10 px-6 border-t border-stone-800">
+        <div class="max-w-6xl mx-auto grid md:grid-cols-3 gap-12 mb-16">
+            <div>
+                <h3 class="text-2xl font-bold mb-6 italic">Passa a trovarci</h3>
+                <p class="text-stone-400">
+                    Via dell'Amore 1<br>
+                    50035 Palazzuolo sul Senio (FI)<br>
+                    Italia
+                </p>
+            </div>
+            <div>
+                <h3 class="text-2xl font-bold mb-6 italic">Orari</h3>
+                <p class="text-stone-400">
+                    Mer - Gio: 18:00 - 00:00<br>
+                    Ven - Sab: 18:00 - 02:00<br>
+                    Domenica: 12:00 - 22:00
+                </p>
+            </div>
+            <div>
+                <h3 class="text-2xl font-bold mb-6 italic">Seguici</h3>
+                <div class="flex gap-4 text-2xl">
+                    <a href="#" class="hover:text-amber-500"><i class="fa-brands fa-instagram"></i></a>
+                    <a href="#" class="hover:text-amber-500"><i class="fa-brands fa-facebook"></i></a>
+                    <a href="#" class="hover:text-amber-500"><i class="fa-brands fa-tiktok"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="text-center text-stone-600 text-sm border-t border-stone-900 pt-8">
+            &copy; 2023 QueerOak Pub. Gestito con orgoglio da Marco & Luca. <br>
+            <span class="text-xs uppercase tracking-widest mt-2 block">Love is Love at high altitude.</span>
+        </div>
+    </footer>
 
-        function rimuoviPilota(id) {
-            const index = currentUser.team.findIndex(p => p.id === id);
-            if (index !== -1) {
-                const wasCapitano = currentUser.team[index].isCapitano;
-                currentUser.team.splice(index, 1);
-                if (wasCapitano && currentUser.team.length > 0) {
-                    currentUser.team[0].isCapitano = true;
-                    showToast(`📢 Nuovo capitano: ${getPilotaById(currentUser.team[0].id).nome}`);
-                }
-                saveCurrentUserData();
-                renderListaPiloti();
-                renderRosa();
-                aggiornaClassifica();
-            }
-        }
-
-        function cambiaCapitano(id) {
-            currentUser.team.forEach(p => p.isCapitano = false);
-            const target = currentUser.team.find(p => p.id === id);
-            if (target) target.isCapitano = true;
-            saveCurrentUserData();
-            renderRosa();
-            renderListaPiloti();
-            showToast(`👑 ${getPilotaById(id).nome} è il nuovo capitano!`);
-        }
-
-        function renderListaPiloti() {
-            const container = document.getElementById('pilotiContainer');
-            if (!container) return;
-            let html = '';
-            pilotiData.forEach(p => {
-                const isSelected = currentUser.team?.some(m => m.id === p.id) || false;
-                const disabled = currentUser.team.length >= 4 && !isSelected;
-                const wildcardBadge = p.wildcard ? '<span class="badge-wildcard">🃏 WILDCARD</span>' : '';
-                html += `
-                    <div class="card-pilota ${isSelected ? 'selezionato' : ''}" data-id="${p.id}" style="${disabled ? 'opacity:0.5; cursor:not-allowed;' : ''}">
-                        <div class="pilota-avatar">${p.icona}</div>
-                        <div class="info-pilota">
-                            <div class="nome-pilota">${p.naz} ${p.nome} ${wildcardBadge}</div>
-                            <div class="moto-team">${p.team} • ${p.scuderia}</div>
-                            <div style="font-size:0.7rem;">valore: ${p.valoreBase} pts</div>
-                        </div>
-                        ${isSelected ? '✅' : (currentUser.team.length>=4 ? '🔒' : '➕')}
-                    </div>
-                `;
-            });
-            container.innerHTML = html;
-            document.querySelectorAll('.card-pilota').forEach(card => {
-                const id = parseInt(card.dataset.id);
-                card.addEventListener('click', () => {
-                    const isSelected = currentUser.team.some(m => m.id === id);
-                    if (!isSelected && currentUser.team.length < 4) aggiungiPilota(id);
-                    else if (isSelected) showToast(`${getPilotaById(id).nome} è già in squadra. Usa il cestino per rimuoverlo.`);
-                    else showToast("Limite 4 piloti raggiunto!");
-                });
-            });
-        }
-
-        function renderRosa() {
-            const container = document.getElementById('rosaLista');
-            const limiteSpan = document.getElementById('limiteMsg');
-            if (!currentUser.team || currentUser.team.length === 0) {
-                container.innerHTML = '<div style="opacity:0.6;">Nessun pilota selezionato. Scegli fino a 4 piloti.</div>';
-                if(limiteSpan) limiteSpan.innerText = '';
-                return;
-            }
-            let html = '';
-            currentUser.team.forEach(m => {
-                const p = getPilotaById(m.id);
-                html += `
-                    <div class="rosa-item">
-                        <span>${p.icona} ${p.nome} (${p.scuderia})</span>
-                        ${m.isCapitano ? '<span style="background:#ffaa33;color:#111;padding:2px 10px;border-radius:20px;">⭐ CAPITANO x1.5</span>' : `<button class="btn-nomina-cap" data-id="${m.id}">Nomina Cap</button>`}
-                        <button class="elimina-rosa" data-id="${m.id}">🗑️</button>
-                    </div>
-                `;
-            });
-            container.innerHTML = html;
-            if(limiteSpan) limiteSpan.innerText = `Piloti: ${currentUser.team.length}/4 | Capitano: ${currentUser.team.find(p=>p.isCapitano) ? getPilotaById(currentUser.team.find(p=>p.isCapitano).id).nome : 'nessuno'}`;
-            
-            document.querySelectorAll('.elimina-rosa').forEach(btn => {
-                btn.addEventListener('click', (e) => { rimuoviPilota(parseInt(btn.dataset.id)); e.stopPropagation(); });
-            });
-            document.querySelectorAll('.btn-nomina-cap').forEach(btn => {
-                btn.addEventListener('click', (e) => { cambiaCapitano(parseInt(btn.dataset.id)); e.stopPropagation(); });
-            });
-        }
-
-        function aggiornaClassifica() {
-            const sorted = [...allUsers].sort((a,b) => b.totalPoints - a.totalPoints);
-            const tbody = document.getElementById('classificaBody');
-            tbody.innerHTML = '';
-            sorted.forEach((user, idx) => {
-                const squadraNomi = user.team?.map(t => getPilotaById(t.id)?.nome.split(' ')[0] || '?').join(', ') || '-';
-                tbody.innerHTML += `
-                    <tr>
-                        <td>${idx+1}</td>
-                        <td>${user.name}</td>
-                        <td>${user.contact}</td>
-                        <td><strong>${user.totalPoints}</strong></td>
-                        <td style="font-size:0.75rem;">${squadraNomi}</td>
-                    </tr>
-                `;
-            });
-        }
-
-        function aggiornaUI() {
-            document.getElementById('punteggioTotaleDisplay').innerHTML = `Punti Totali: ${currentUser.totalPoints}`;
-            document.getElementById('userNameDisplay').innerHTML = currentUser.name;
-            document.getElementById('userContactDisplay').innerHTML = currentUser.contact;
-            renderListaPiloti();
-            renderRosa();
-            aggiornaClassifica();
-        }
-
-        function invitaAmico() {
-            const shareText = `Unisciti a me su FantamotoGP Arena! Accedi con la tua email e crea la
+</body>
+</html>
