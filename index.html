@@ -86,7 +86,9 @@
         .negativo { color: #e53e3e; }
 
         .punteggio { font-size: 1.2rem; font-weight: 800; color: #2d3748; margin-bottom: 0.5rem; text-align: center; }
-        .messaggio { font-size: 1.4rem; font-weight: 800; text-align: center; }
+        .messaggio { font-size: 1.4rem; font-weight: 800; text-align: center; margin-top: 10px; }
+        .motivo-extra { font-size: 0.9rem; font-weight: normal; display: block; margin-top: 5px; }
+        
         .success { color: #48bb78; }
         .error { color: #e53e3e; }
     </style>
@@ -121,7 +123,7 @@
     </div>
 
     <script>
-        const API_KEY = 'INSERISCI_QUI_LA_TUA_API_KEY'; // Incolla qui la tua API Key di OpenWeatherMap!
+        const API_KEY = 'INSERISCI_QUI_LA_TUA_API_KEY'; // Incolla qui la tua API Key di OpenWeather!
 
         function ottieniTemperaturaGPS() {
             const statusText = document.getElementById('gps-status');
@@ -207,9 +209,9 @@
             htmlLista += generaRigaLista(`Ora`, ora);
             punteggioTotale += isPari(ora) ? 1 : -1;
 
-            // 2. Giorno della settimana (Lunedì = 1, Martedì = 2 ... Domenica = 7)
+            // 2. Giorno della settimana (Lunedì = 1 ... Domenica = 7)
             let giornoJS = dataAttuale.getDay();
-            let giornoNumero = giornoJS === 0 ? 7 : giornoJS; // Trasforma Domenica (0) in 7
+            let giornoNumero = giornoJS === 0 ? 7 : giornoJS; 
             htmlLista += generaRigaLista(`Giorno (${giorniSettimanaNomi[giornoJS]})`, giornoNumero);
             punteggioTotale += isPari(giornoNumero) ? 1 : -1;
 
@@ -219,7 +221,7 @@
             punteggioTotale += isPari(giornoMese) ? 1 : -1;
 
             // 4. Numero del mese
-            const mese = dataAttuale.getMonth() + 1; // getMonth parte da 0
+            const mese = dataAttuale.getMonth() + 1;
             htmlLista += generaRigaLista(`Mese dell'anno`, mese);
             punteggioTotale += isPari(mese) ? 1 : -1;
 
@@ -238,13 +240,15 @@
             const testoMessaggio = document.getElementById('testo-messaggio');
 
             listaParametri.innerHTML = htmlLista;
-            testoPunteggio.innerText = `Punteggio totale: ${punteggioTotale}`;
+            testoPunteggio.innerHTML = `Punteggio totale: <strong>${punteggioTotale}</strong>`;
 
-            if (punteggioTotale > 1) {
-                testoMessaggio.innerText = "PUOI ANDARE IN BAGNO! 🎉";
+            // NUOVA REGOLA: Se il totale è pari = si va, se è dispari = non si va.
+            // Attenzione: un numero negativo può essere dispari (es. -1, -3), quindi usiamo Math.abs() per sicurezza.
+            if (Math.abs(punteggioTotale) % 2 === 0) {
+                testoMessaggio.innerHTML = "PUOI ANDARE IN BAGNO! 🎉<br><span class='motivo-extra'>(Il punteggio totale è PARI)</span>";
                 testoMessaggio.className = "messaggio success";
             } else {
-                testoMessaggio.innerText = "NON PUOI ANDARE IN BAGNO. 🛑";
+                testoMessaggio.innerHTML = "NON PUOI ANDARE IN BAGNO. 🛑<br><span class='motivo-extra'>(Il punteggio totale è DISPARI)</span>";
                 testoMessaggio.className = "messaggio error";
             }
 
