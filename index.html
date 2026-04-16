@@ -26,7 +26,7 @@
             border-radius: 20px;
             box-shadow: 0 15px 35px rgba(0,0,0,0.2);
             text-align: center;
-            max-width: 450px;
+            max-width: 480px;
             width: 90%;
             margin: 20px 0;
         }
@@ -68,30 +68,22 @@
             padding-top: 1.5rem; 
             border-top: 2px dashed #e2e8f0; 
             display: none; 
-            text-align: left; /* Allineato a sinistra per la lista */
+            text-align: left;
         }
 
-        /* Stile per la lista dei parametri */
-        ul.lista-dettagli {
-            list-style-type: none;
-            padding: 0;
-            margin: 0 0 1.5rem 0;
-        }
-
+        ul.lista-dettagli { list-style-type: none; padding: 0; margin: 0 0 1.5rem 0; }
         ul.lista-dettagli li {
-            background: #f7fafc;
-            margin-bottom: 8px;
-            padding: 10px 15px;
-            border-radius: 8px;
-            display: flex;
-            justify-content: space-between;
-            font-size: 0.9rem;
-            color: #4a5568;
-            border: 1px solid #e2e8f0;
+            background: #f7fafc; margin-bottom: 8px; padding: 10px 15px;
+            border-radius: 8px; display: flex; justify-content: space-between; align-items: center;
+            font-size: 0.9rem; color: #4a5568; border: 1px solid #e2e8f0;
         }
 
-        .punti-positivi { color: #48bb78; font-weight: bold; }
-        .punti-negativi { color: #e53e3e; font-weight: bold; }
+        .dettaglio-testo { flex-grow: 1; }
+        .esito-pari { color: #48bb78; font-weight: 600; font-size: 0.8rem; margin-left: 5px; }
+        .esito-dispari { color: #e53e3e; font-weight: 600; font-size: 0.8rem; margin-left: 5px; }
+        .punti-badge { font-weight: bold; font-size: 1.1rem; min-width: 30px; text-align: right; }
+        .positivo { color: #48bb78; }
+        .negativo { color: #e53e3e; }
 
         .punteggio { font-size: 1.2rem; font-weight: 800; color: #2d3748; margin-bottom: 0.5rem; text-align: center; }
         .messaggio { font-size: 1.4rem; font-weight: 800; text-align: center; }
@@ -103,7 +95,7 @@
 
     <div class="card">
         <h1>Parametri Bagno 🚽</h1>
-        <p>Il severissimo algoritmo che decide se puoi andare in bagno.</p>
+        <p>L'algoritmo definitivo: Pari = +1, Dispari = -1</p>
 
         <div class="input-group">
             <label for="indumenti">Numero di indumenti indossati:</label>
@@ -123,14 +115,13 @@
 
         <div id="risultato-container">
             <ul id="lista-parametri" class="lista-dettagli"></ul>
-            
             <div id="testo-punteggio" class="punteggio"></div>
             <div id="testo-messaggio" class="messaggio"></div>
         </div>
     </div>
 
     <script>
-        const API_KEY = 'INSERISCI_QUI_LA_TUA_API_KEY'; // Ricordati di rimettere la tua chiave API qui!
+        const API_KEY = 'INSERISCI_QUI_LA_TUA_API_KEY'; // Incolla qui la tua API Key di OpenWeatherMap!
 
         function ottieniTemperaturaGPS() {
             const statusText = document.getElementById('gps-status');
@@ -173,10 +164,25 @@
             );
         }
 
-        // Funzione di utilità per formattare il punteggio nella lista (+1 o -1)
-        function formattaPunti(punti) {
-            if (punti > 0) return `<span class="punti-positivi">+1</span>`;
-            return `<span class="punti-negativi">-1</span>`;
+        function isPari(numero) {
+            return numero % 2 === 0;
+        }
+
+        function generaRigaLista(nomeParametro, valore) {
+            const pari = isPari(valore);
+            const punti = pari ? "+1" : "-1";
+            const classeEsito = pari ? "esito-pari" : "esito-dispari";
+            const testoEsito = pari ? "(Pari)" : "(Dispari)";
+            const classePunti = pari ? "positivo" : "negativo";
+
+            return `
+                <li>
+                    <div class="dettaglio-testo">
+                        ${nomeParametro}: <strong>${valore}</strong> <span class="${classeEsito}">${testoEsito}</span>
+                    </div>
+                    <div class="punti-badge ${classePunti}">${punti}</div>
+                </li>
+            `;
         }
 
         function calcolaPermesso() {
@@ -191,58 +197,49 @@
             const indumenti = parseInt(inputIndumenti);
             const temperatura = parseInt(inputTemperatura);
             let punteggioTotale = 0;
-            let htmlLista = ""; // Variabile che conterrà la lista da stampare
+            let htmlLista = ""; 
 
             const dataAttuale = new Date();
             const giorniSettimanaNomi = ['Domenica', 'Lunedì', 'Martedì', 'Mercoledì', 'Giovedì', 'Venerdì', 'Sabato'];
 
-            // 1. Ora pari/dispari
+            // 1. Ora
             const ora = dataAttuale.getHours();
-            const puntiOra = (ora % 2 === 0) ? 1 : -1;
-            punteggioTotale += puntiOra;
-            htmlLista += `<li>Ora (${ora}:00): <span>${formattaPunti(puntiOra)}</span></li>`;
+            htmlLista += generaRigaLista(`Ora`, ora);
+            punteggioTotale += isPari(ora) ? 1 : -1;
 
-            // 2. Giorno della settimana
-            const giornoSettimana = dataAttuale.getDay();
-            const puntiSettimana = (giornoSettimana >= 1 && giornoSettimana <= 5) ? 1 : -1;
-            punteggioTotale += puntiSettimana;
-            htmlLista += `<li>Giorno (${giorniSettimanaNomi[giornoSettimana]}): <span>${formattaPunti(puntiSettimana)}</span></li>`;
+            // 2. Giorno della settimana (Lunedì = 1, Martedì = 2 ... Domenica = 7)
+            let giornoJS = dataAttuale.getDay();
+            let giornoNumero = giornoJS === 0 ? 7 : giornoJS; // Trasforma Domenica (0) in 7
+            htmlLista += generaRigaLista(`Giorno (${giorniSettimanaNomi[giornoJS]})`, giornoNumero);
+            punteggioTotale += isPari(giornoNumero) ? 1 : -1;
 
             // 3. Giorno del mese
             const giornoMese = dataAttuale.getDate();
-            const puntiGiornoMese = (giornoMese % 2 === 0) ? 1 : -1;
-            punteggioTotale += puntiGiornoMese;
-            htmlLista += `<li>Giorno del mese (${giornoMese}): <span>${formattaPunti(puntiGiornoMese)}</span></li>`;
+            htmlLista += generaRigaLista(`Giorno del mese`, giornoMese);
+            punteggioTotale += isPari(giornoMese) ? 1 : -1;
 
             // 4. Numero del mese
-            const mese = dataAttuale.getMonth() + 1;
-            const puntiMese = (mese % 2 === 0) ? 1 : -1;
-            punteggioTotale += puntiMese;
-            htmlLista += `<li>Numero del mese (${mese}): <span>${formattaPunti(puntiMese)}</span></li>`;
+            const mese = dataAttuale.getMonth() + 1; // getMonth parte da 0
+            htmlLista += generaRigaLista(`Mese dell'anno`, mese);
+            punteggioTotale += isPari(mese) ? 1 : -1;
 
-            // 5. Temperatura (> 20)
-            const puntiTemp = (temperatura > 20) ? 1 : -1;
-            punteggioTotale += puntiTemp;
-            htmlLista += `<li>Temperatura (${temperatura}°C): <span>${formattaPunti(puntiTemp)}</span></li>`;
+            // 5. Temperatura
+            htmlLista += generaRigaLista(`Temperatura`, temperatura);
+            punteggioTotale += isPari(temperatura) ? 1 : -1;
 
-            // 6. Indumenti (Pari o Dispari)
-            const puntiIndumenti = (indumenti % 2 === 0) ? 1 : -1;
-            punteggioTotale += puntiIndumenti;
-            htmlLista += `<li>Indumenti (${indumenti}): <span>${formattaPunti(puntiIndumenti)}</span></li>`;
+            // 6. Indumenti
+            htmlLista += generaRigaLista(`Indumenti`, indumenti);
+            punteggioTotale += isPari(indumenti) ? 1 : -1;
 
-            // Mostra tutto nella pagina
+            // Stampa a schermo
             const container = document.getElementById('risultato-container');
             const listaParametri = document.getElementById('lista-parametri');
             const testoPunteggio = document.getElementById('testo-punteggio');
             const testoMessaggio = document.getElementById('testo-messaggio');
 
-            // Inserisci la lista
             listaParametri.innerHTML = htmlLista;
-
-            // Inserisci il punteggio
             testoPunteggio.innerText = `Punteggio totale: ${punteggioTotale}`;
 
-            // Inserisci il messaggio finale
             if (punteggioTotale > 1) {
                 testoMessaggio.innerText = "PUOI ANDARE IN BAGNO! 🎉";
                 testoMessaggio.className = "messaggio success";
@@ -251,13 +248,9 @@
                 testoMessaggio.className = "messaggio error";
             }
 
-            // Rendi visibile il contenitore
             container.style.display = 'block';
         }
     </script>
 
 </body>
 </html>
-
-
-
