@@ -124,7 +124,6 @@
     </div>
 
     <script>
-        // La tua API Key inserita correttamente
         const API_KEY = 'fb8cb7f2f9da78c694454180a6723926'; 
 
         function ottieniTemperaturaGPS() {
@@ -181,10 +180,16 @@
             const testoEsito = pari ? "(Pari)" : "(Dispari)";
             const classePunti = pari ? "positivo" : "neutro";
 
+            // Se è il minuto, formatta con lo zero davanti (es. "05" invece di "5") se minore di 10, ma solo per la visualizzazione testuale, non per il calcolo.
+            let valoreVisualizzato = valore;
+            if (nomeParametro === 'Minuto' && valore < 10) {
+                valoreVisualizzato = "0" + valore;
+            }
+
             return `
                 <li>
                     <div class="dettaglio-testo">
-                        ${nomeParametro}: <strong>${valore}</strong> <span class="${classeEsito}">${testoEsito}</span>
+                        ${nomeParametro}: <strong>${valoreVisualizzato}</strong> <span class="${classeEsito}">${testoEsito}</span>
                     </div>
                     <div class="punti-badge ${classePunti}">${punti}</div>
                 </li>
@@ -208,32 +213,37 @@
             const dataAttuale = new Date();
             const giorniSettimanaNomi = ['Domenica', 'Lunedì', 'Martedì', 'Mercoledì', 'Giovedì', 'Venerdì', 'Sabato'];
 
-            // 1. Ora
+            // 1. Minuto (NUOVO PARAMETRO)
+            const minuto = dataAttuale.getMinutes();
+            htmlLista += generaRigaLista(`Minuto`, minuto);
+            punteggioTotale += isPari(minuto) ? 1 : 0;
+
+            // 2. Ora
             const ora = dataAttuale.getHours();
             htmlLista += generaRigaLista(`Ora`, ora);
             punteggioTotale += isPari(ora) ? 1 : 0;
 
-            // 2. Giorno della settimana (Lunedì = 1 ... Domenica = 7)
+            // 3. Giorno della settimana (Lunedì = 1 ... Domenica = 7)
             let giornoJS = dataAttuale.getDay();
             let giornoNumero = giornoJS === 0 ? 7 : giornoJS; 
             htmlLista += generaRigaLista(`Giorno (${giorniSettimanaNomi[giornoJS]})`, giornoNumero);
             punteggioTotale += isPari(giornoNumero) ? 1 : 0;
 
-            // 3. Giorno del mese
+            // 4. Giorno del mese
             const giornoMese = dataAttuale.getDate();
             htmlLista += generaRigaLista(`Giorno del mese`, giornoMese);
             punteggioTotale += isPari(giornoMese) ? 1 : 0;
 
-            // 4. Numero del mese
+            // 5. Numero del mese
             const mese = dataAttuale.getMonth() + 1;
             htmlLista += generaRigaLista(`Mese dell'anno`, mese);
             punteggioTotale += isPari(mese) ? 1 : 0;
 
-            // 5. Temperatura
+            // 6. Temperatura
             htmlLista += generaRigaLista(`Temperatura`, temperatura);
             punteggioTotale += isPari(temperatura) ? 1 : 0;
 
-            // 6. Indumenti
+            // 7. Indumenti
             htmlLista += generaRigaLista(`Indumenti`, indumenti);
             punteggioTotale += isPari(indumenti) ? 1 : 0;
 
